@@ -20,6 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.resumeanalyzer.security.CustomUserDetailsService;
+import com.resumeanalyzer.security.JwtAccessDeniedHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -27,6 +28,7 @@ import com.resumeanalyzer.security.CustomUserDetailsService;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final JwtAccessDeniedHandler accessDeniedHandler;
     private final CustomUserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
@@ -36,7 +38,8 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .exceptionHandling(ex -> ex
-                .authenticationEntryPoint(unauthorizedHandler))
+                .authenticationEntryPoint(unauthorizedHandler)
+                .accessDeniedHandler(accessDeniedHandler))
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
