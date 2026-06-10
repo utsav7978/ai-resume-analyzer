@@ -2,6 +2,9 @@ package com.resumeanalyzer.controller;
 
 import com.resumeanalyzer.dto.response.ApiResponse;
 import com.resumeanalyzer.dto.response.ResumeResponse;
+import com.resumeanalyzer.model.Resume;
+import com.resumeanalyzer.model.User;
+import com.resumeanalyzer.service.UserService;
 import com.resumeanalyzer.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +21,7 @@ import java.util.List;
 public class ResumeController {
 
     private final ResumeService resumeService;
+    private final UserService userService;
 
     @PostMapping(value = "/upload",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -45,6 +49,29 @@ public class ResumeController {
         ResumeResponse response = resumeService.getResumeById(id);
         return ResponseEntity.ok(
                 ApiResponse.success("Resume fetched", response));
+    }
+
+    @GetMapping("/{id}/text-preview")
+    public ResponseEntity<ApiResponse<String>> getResumeTextPreview(
+            @PathVariable String id) {
+
+        User currentUser = userService.getCurrentUser();
+        Resume resume = resumeService
+                .findResumeAndVerifyOwnership(id, currentUser.getId());
+
+        String preview = resume.getResumeText();
+        if (preview == null || preview.isBlank()) {
+            return ResponseEntity.ok(
+                    ApiResponse.success("No text extracted", ""));
+        }
+
+        // Return first 500 chars as preview
+        String truncated = preview.length() > 500
+                ? preview.substring(0, 500) + "..."
+                : preview;
+
+        return ResponseEntity.ok(
+                ApiResponse.success("Text preview fetched", truncated));
     }
 
     @DeleteMapping("/{id}")

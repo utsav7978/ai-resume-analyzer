@@ -33,8 +33,20 @@ public class ResumeService {
         // Store the PDF file on disk
         String storedPath = fileStorageService.storeFile(file, currentUser.getId());
 
-        // Extract text from PDF
-        String resumeText = pdfParserService.extractText(storedPath);
+        // Extract text from PDF — graceful fallback if parsing fails
+        String resumeText;
+        String analysisStatus;
+
+        try {
+            resumeText = pdfParserService.extractText(storedPath);
+            analysisStatus = "PENDING";
+            log.info("PDF text extracted successfully for user {}",
+                    currentUser.getEmail());
+        } catch (Exception ex) {
+            log.error("PDF parsing failed: {}", ex.getMessage());
+            resumeText = "";
+            analysisStatus = "PARSE_FAILED";
+        }
 
         // Save resume metadata to MongoDB
         Resume resume = Resume.builder()
@@ -43,7 +55,7 @@ public class ResumeService {
                 .fileStoragePath(storedPath)
                 .fileSize(file.getSize())
                 .resumeText(resumeText)
-                .analysisStatus("PENDING")
+                .analysisStatus(analysisStatus)
                 .build();
 
         Resume savedResume = resumeRepository.save(resume);
