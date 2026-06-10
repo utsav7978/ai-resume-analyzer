@@ -26,4 +26,10 @@ public class AppConfig {
         Files.createDirectories(path);
         return path;
     }
+
+    @Bean
+    public com.fasterxml.jackson.databind.ObjectMapper objectMapper() {
+        return new com.fasterxml.jackson.databind.ObjectMapper()
+                .findAndRegisterModules();
+    }
 }
