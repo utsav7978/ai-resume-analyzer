@@ -143,4 +143,40 @@ public class AnalysisService {
                 .analyzedAt(analysis.getAnalyzedAt())
                 .build();
     }
+
+    // ── Force Re-Analyze (delete existing and run fresh) ─────────────────────────
+
+    public AnalysisResponse reAnalyzeResume(String resumeId) {
+        User currentUser = userService.getCurrentUser();
+
+        Resume resume = resumeRepository.findById(resumeId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Resume not found: " + resumeId));
+
+        if (!resume.getUserId().equals(currentUser.getId())) {
+            throw new UnauthorizedException(
+                    "You don't have permission to analyze this resume");
+        }
+
+        if (resume.getResumeText() == null || resume.getResumeText().isBlank()) {
+            throw new RuntimeException(
+                    "Resume text is empty. Cannot re-analyze.");
+        }
+
+        // Delete existing analysis if present
+        analysisRepository.findByResumeId(resumeId)
+                .ifPresent(existing -> {
+                    analysisRepository.deleteById(existing.getId());
+                    log.info("Deleted existing analysis for re-analysis: {}",
+                            resumeId);
+                });
+
+        // Reset resume status
+        resume.setAnalysisStatus("PENDING");
+        resume.setAnalysisId(null);
+        resumeRepository.save(resume);
+
+        // Run fresh analysis
+        return runAnalysis(resume, currentUser.getId());
+    }
 }

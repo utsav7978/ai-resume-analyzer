@@ -44,4 +44,14 @@ public class AnalysisController {
         return ResponseEntity.ok(
                 ApiResponse.success("Analyses fetched", analyses));
     }
+
+    // Force re-analyze a resume
+    @PostMapping("/re-analyze/{resumeId}")
+    public ResponseEntity<ApiResponse<AnalysisResponse>> reAnalyzeResume(
+            @PathVariable String resumeId) {
+
+        AnalysisResponse response = analysisService.reAnalyzeResume(resumeId);
+        return ResponseEntity.ok(
+                ApiResponse.success("Resume re-analyzed successfully", response));
+    }
 }
