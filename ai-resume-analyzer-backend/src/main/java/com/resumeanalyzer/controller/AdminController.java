@@ -1,7 +1,7 @@
 package com.resumeanalyzer.controller;
 
-import com.resumeanalyzer.dto.response.ApiResponse;
-import com.resumeanalyzer.dto.response.UserProfileResponse;
+import com.resumeanalyzer.dto.response.*;
+import com.resumeanalyzer.dto.response.AdminDashboardResponse.ResumeSummary;
 import com.resumeanalyzer.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,32 +18,72 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    @GetMapping("/users")
-    public ResponseEntity<ApiResponse<List<UserProfileResponse>>> getAllUsers() {
-        List<UserProfileResponse> users = adminService.getAllUsers();
+    // ── Dashboard ─────────────────────────────────────────────────────────────
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<ApiResponse<AdminDashboardResponse>> getAdminDashboard() {
         return ResponseEntity.ok(
-                ApiResponse.success("All users fetched", users));
+                ApiResponse.success("Admin dashboard loaded",
+                        adminService.getAdminDashboard()));
     }
 
+    // ── User Management ───────────────────────────────────────────────────────
+
+    @GetMapping("/users")
+    public ResponseEntity<ApiResponse<List<UserProfileResponse>>> getAllUsers() {
+        return ResponseEntity.ok(
+                ApiResponse.success("All users fetched",
+                        adminService.getAllUsers()));
+    }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<ApiResponse<UserProfileResponse>> getUserDetails(
+            @PathVariable String userId) {
+        return ResponseEntity.ok(
+                ApiResponse.success("User details fetched",
+                        adminService.getUserDetails(userId)));
+    }
+
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<ApiResponse<?>> deleteUser(
+            @PathVariable String userId) {
+        adminService.deleteUser(userId);
+        return ResponseEntity.ok(
+                ApiResponse.success("User and all associated data deleted"));
+    }
+
+    // ── Resume Management ─────────────────────────────────────────────────────
+
     @GetMapping("/resumes")
-    public ResponseEntity<ApiResponse<?>> getAllResumes() {
+    public ResponseEntity<ApiResponse<List<ResumeSummary>>> getAllResumes() {
         return ResponseEntity.ok(
                 ApiResponse.success("All resumes fetched",
                         adminService.getAllResumes()));
     }
 
-    @DeleteMapping("/resume/{id}")
-    public ResponseEntity<ApiResponse<?>> deleteAnyResume(
-            @PathVariable String id) {
-        adminService.deleteResume(id);
+    @GetMapping("/users/{userId}/resumes")
+    public ResponseEntity<ApiResponse<List<ResumeSummary>>> getResumesByUser(
+            @PathVariable String userId) {
+        return ResponseEntity.ok(
+                ApiResponse.success("User resumes fetched",
+                        adminService.getResumesByUser(userId)));
+    }
+
+    @DeleteMapping("/resume/{resumeId}")
+    public ResponseEntity<ApiResponse<?>> deleteResume(
+            @PathVariable String resumeId) {
+        adminService.deleteResume(resumeId);
         return ResponseEntity.ok(
                 ApiResponse.success("Resume deleted successfully"));
     }
 
-    @GetMapping("/stats")
-    public ResponseEntity<ApiResponse<?>> getDashboardStats() {
+    // ── Analysis Management ───────────────────────────────────────────────────
+
+    @GetMapping("/resume/{resumeId}/analysis")
+    public ResponseEntity<ApiResponse<AnalysisResponse>> getAnalysisForResume(
+            @PathVariable String resumeId) {
         return ResponseEntity.ok(
-                ApiResponse.success("Stats fetched",
-                        adminService.getDashboardStats()));
+                ApiResponse.success("Analysis fetched",
+                        adminService.getAnalysisForResume(resumeId)));
     }
 }
