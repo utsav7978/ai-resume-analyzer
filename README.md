@@ -6,8 +6,17 @@ A full-stack AI-powered resume analysis application built with **Spring Boot**, 
 
 ## 📸 Screenshots
 
-> Add screenshots of your application here after deployment.
-> Suggested shots: Login page · Dashboard · Upload page · Analysis results · Admin dashboard
+| Login Page                 | Dashboard                      |
+| -------------------------- | ------------------------------ |
+| ![](screenshots/login.png) | ![](screenshots/dashboard.png) |
+
+| Upload Resume               | Analysis Results              |
+| --------------------------- | ----------------------------- |
+| ![](screenshots/upload.png) | ![](screenshots/analysis.png) |
+
+| Admin Dashboard                      |
+| ------------------------------------ |
+| ![](screenshots/admin-dashboard.png) |
 
 ---
 
