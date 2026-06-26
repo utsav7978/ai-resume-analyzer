@@ -4,6 +4,14 @@ A full-stack AI-powered resume analysis application built with **Spring Boot**, 
 
 ---
 
+## 🌐 Live Demo
+
+**Live Application:** https://ai-resume-analyzer-amber-two.vercel.app
+
+> **Note:** The backend is hosted on Render's free tier. The first request after inactivity may take around 30–60 seconds while the service wakes up.
+
+---
+
 ## 📸 Screenshots
 
 | Login Page                 | Dashboard                      |
@@ -197,7 +205,7 @@ You also need a **free Groq API key** from https://console.groq.com
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/YOUR_USERNAME/ai-resume-analyzer.git
+git clone https://github.com/utsav7978/ai-resume-analyzer.git
 cd ai-resume-analyzer/ai-resume-analyzer-backend
 ```
 
@@ -386,6 +394,8 @@ This project was built across 14 structured phases:
 **Utsav Kumar Singh**
 
 Built as a portfolio project demonstrating full-stack development with Java Spring Boot, React, MongoDB, and AI API integration.
+
+🌐 Live Demo: https://ai-resume-analyzer-amber-two.vercel.app
 
 - GitHub: [utsav7978](https://github.com/utsav7978)
 - LinkedIn: [Utsav Kumar Singh](https://www.linkedin.com/in/utsav-kumar-singh/)
