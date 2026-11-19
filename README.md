@@ -33,7 +33,7 @@ A full-stack AI-powered resume analysis application built with **Spring Boot**, 
 ### User Features
 - 🔐 Secure registration and login with JWT authentication
 - 📄 PDF resume upload with drag-and-drop support
-- 🤖 AI-powered resume analysis using Groq (Llama 3.1)
+- 🤖 AI-powered resume analysis using Groq (GPT-OSS 20B)
 - 💡 Extracts technical skills, soft skills, strengths, weaknesses
 - 🎯 Suggests suitable job roles based on resume content
 - ➕ Identifies missing skills to improve hirability
@@ -57,7 +57,7 @@ A full-stack AI-powered resume analysis application built with **Spring Boot**, 
 | **Frontend** | React 18, Vite, Tailwind CSS, Axios, React Router v6 |
 | **Backend** | Java 21, Spring Boot 3.5.x, Spring Security 6, JWT |
 | **Database** | MongoDB 7.x with Spring Data MongoDB |
-| **AI** | Groq API (Llama 3.1 8B Instant) |
+| **AI** | Groq API (GPT-OSS 20B) |
 | **PDF Parsing** | Apache PDFBox 3.0.1 |
 | **Auth** | JWT (JJWT 0.12.3), BCrypt password hashing |
 | **Build** | Maven 3.9.x, Node.js 20 LTS |
@@ -227,7 +227,7 @@ export GROQ_API_KEY="your_actual_groq_api_key_here"
 The file at `src/main/resources/application.properties` should contain:
 ```properties
 app.groq.api-key=${GROQ_API_KEY}
-app.groq.model=llama-3.1-8b-instant
+app.groq.model=openai/gpt-oss-20b
 ```
 
 No hardcoded keys — the environment variable is read automatically at startup.
@@ -285,7 +285,7 @@ All new registrations default to `ROLE_USER`. To promote a user to admin:
 
 ## 🤖 AI Analysis Details
 
-**Model:** `llama-3.1-8b-instant` via Groq API
+**Model:** `GPT-OSS 20B` via Groq API
 
 **What the AI extracts from your resume:**
 
@@ -333,7 +333,7 @@ spring.servlet.multipart.resolve-lazily=true
 # Groq AI
 app.groq.api-key=${GROQ_API_KEY}   # Set as OS environment variable
 app.groq.api-url=https://api.groq.com/openai/v1/chat/completions
-app.groq.model=llama-3.1-8b-instant
+app.groq.model=openai/gpt-oss-20b
 ```
 
 ---
@@ -346,7 +346,7 @@ app.groq.model=llama-3.1-8b-instant
 | Git push blocked (secret detected) | API key committed directly in `application.properties` | Use `${GROQ_API_KEY}` placeholder; add `.env` to `.gitignore` |
 | Non-PDF upload returns 500 instead of 400 | Spring multipart handler intercepts before validation | Add `spring.servlet.multipart.resolve-lazily=true` to `application.properties` |
 | ROLE_USER gets 401 instead of 403 on admin routes | Spring Security's default error handling conflicts | Add `JwtAccessDeniedHandler` registered in `SecurityConfig` |
-| Groq model `llama3-8b-8192` returns error | Model decommissioned by Groq | Replaced with `llama-3.1-8b-instant` |
+| Groq model `llama3-8b-8192` returns error | Model decommissioned by Groq | Replaced with `GPT-OSS 20B` |
 
 ---
 
